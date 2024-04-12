@@ -1,0 +1,20 @@
+[
+  {
+    "id": "579bf6ce-7abc-47fc-bda1-29771e070c84",
+    "make": "Germany",
+    "model": "Porche",
+    "year": 2010
+  },
+  {
+    "id": "5c8efdc2-a0c9-4fb8-885a-93d441e6f59a",
+    "make": "Yugoslavia",
+    "model": "Yugo 55",
+    "year": 1975
+  },
+  {
+    "id": "8a92f0fa-2e7d-4deb-a3fd-bc021a4d52cd",
+    "make": "Germany",
+    "model": "Audi",
+    "year": 2010
+  }
+]
