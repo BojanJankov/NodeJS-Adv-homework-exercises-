@@ -1,77 +1,53 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Car } from './interface/car.interface';
-import { readFile, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { Car } from './entities/product.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CreateCarDto } from './dtos/create-car.dto';
-import { v4 as uuid } from 'uuid';
 import { UpdateCarDto } from './dtos/update-car.dto';
+import { CarFilters } from './interfaces/filters-interface';
+import { filter } from 'rxjs';
 
 @Injectable()
 export class CarsService {
-  async getAllCars() {
-    const carsJSON = await readFile(
-      join(process.cwd(), 'src', 'cars', 'data', 'cars.json'),
-      'utf-8',
-    );
+  constructor(@InjectRepository(Car) private carRepo: Repository<Car>) {}
 
-    const cars: Car[] = JSON.parse(carsJSON);
+  getAllCars(filters: CarFilters) {
+    const filterConfig: FindManyOptions<Car> = {};
 
-    return cars;
+    if (filters.make) {
+      filterConfig.where = { make: filters.make };
+    }
+
+    if (filters.model) {
+      filterConfig.where = { ...filterConfig.where, model: filters.model };
+    }
+    if (filters.orderBy) {
+      if (filters.orderBy === 'year') filterConfig.order = { year: 'ASC' };
+    }
+
+    return this.carRepo.find(filterConfig);
   }
-
-  async saveCars(cars: Car[]) {
-    await writeFile(
-      join(process.cwd(), 'src', 'cars', 'data', 'cars.json'),
-      JSON.stringify(cars, null, 2),
-      'utf-8',
-    );
-  }
-  async getCarById(carId: string) {
-    const cars = await this.getAllCars();
-
-    const foundCar = cars.find((car) => car.id === carId);
+  async getCarById(id: number) {
+    const foundCar = await this.carRepo.findOneBy({ id });
 
     if (!foundCar) throw new NotFoundException('Car Not Found');
 
     return foundCar;
   }
-  async createCar(carData: CreateCarDto) {
-    const cars = await this.getAllCars();
 
-    const newCar: Car = { id: uuid(), ...carData };
-
-    cars.push(newCar);
-
-    await this.saveCars(cars);
-
-    return newCar;
+  createCar(carData: CreateCarDto) {
+    return this.carRepo.save(carData);
   }
-  async updateCar(carId: string, updateCarData: UpdateCarDto) {
-    const cars = await this.getAllCars();
+  async updateCar(id: number, updateCarData: UpdateCarDto) {
+    const foundCar = await this.getCarById(id);
 
-    const foundCar = cars.some((car) => car.id === carId);
+    Object.assign(foundCar, updateCarData);
 
-    if (!foundCar) throw new NotFoundException('Car Not Found');
-
-    const updatedCars = cars.map((car) => {
-      if (car.id === carId) {
-        return { ...car, ...updateCarData };
-      } else {
-        return car;
-      }
-    });
-
-    await this.saveCars(updatedCars);
+    await this.carRepo.save(foundCar);
   }
+  async deleteCar(id: number) {
+    const foundCar = await this.getCarById(id);
 
-  async deleteCar(carId: string) {
-    const cars = await this.getAllCars();
-
-    const updatedCars = cars.filter((car) => car.id !== carId);
-
-    if (cars.length === updatedCars.length)
-      throw new NotFoundException('Car Not Found');
-
-    await this.saveCars(updatedCars);
+    await this.carRepo.remove(foundCar);
   }
 }

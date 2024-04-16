@@ -7,39 +7,48 @@ import {
   Patch,
   Delete,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './dtos/create-car.dto';
 import { UpdateCarDto } from './dtos/update-car.dto';
+import { CarFilters } from './interfaces/filters-interface';
+import { filter } from 'rxjs';
 
 @Controller('cars')
 export class CarsController {
   constructor(private carsService: CarsService) {}
 
   @Get()
-  getAllCars() {
-    return this.carsService.getAllCars();
+  getAllCars(
+    @Query('make') make: string,
+    @Query('model') model: string,
+    @Query('orderBy') orderBy: 'year',
+  ) {
+    const filters: CarFilters = {
+      make,
+      model,
+      orderBy,
+    };
+    return this.carsService.getAllCars(filters);
   }
 
-  @Get(':id')
-  getCarById(@Param('id') carId: string) {
-    return this.carsService.getCarById(carId);
+  @Get('/:id')
+  getCarById(@Param('id') id: string) {
+    return this.carsService.getCarById(Number(id));
   }
 
   @Post()
-  @HttpCode(201)
-  createCar(@Body() carBody: CreateCarDto) {
-    return this.carsService.createCar(carBody);
+  createCar(@Body() carData: CreateCarDto) {
+    return this.carsService.createCar(carData);
   }
-
-  @Patch(':id')
-  updateCar(@Param('id') carId: string, @Body() updateCarBody: UpdateCarDto) {
-    return this.carsService.updateCar(carId, updateCarBody);
+  @Patch('/:id')
+  updateCar(@Param('id') id: string, @Body() updateCarData: UpdateCarDto) {
+    return this.carsService.updateCar(Number(id), updateCarData);
   }
-
-  @Delete(':id')
+  @Delete('/:id')
   @HttpCode(204)
-  deleteCar(@Param('id') carId: string) {
-    return this.carsService.deleteCar(carId);
+  deleteCar(@Param('id') id: string) {
+    return this.carsService.deleteCar(Number(id));
   }
 }

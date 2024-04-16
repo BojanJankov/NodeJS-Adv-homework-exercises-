@@ -1,16 +1,4 @@
-import { IsString, IsNumber, Length, IsOptional } from 'class-validator';
+import { CreateCarDto } from './create-car.dto';
+import { PartialType } from '@nestjs/mapped-types';
 
-export class UpdateCarDto {
-  @IsString()
-  @IsOptional()
-  make: string;
-
-  @IsString()
-  @Length(2, 20)
-  @IsOptional()
-  model: string;
-
-  @IsNumber()
-  @IsOptional()
-  year: number;
-}
+export class UpdateCarDto extends PartialType(CreateCarDto) {}
