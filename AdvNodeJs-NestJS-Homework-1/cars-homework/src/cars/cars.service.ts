@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Car } from './entities/product.entity';
+import { Car } from './entities/car.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 import { CreateCarDto } from './dtos/create-car.dto';

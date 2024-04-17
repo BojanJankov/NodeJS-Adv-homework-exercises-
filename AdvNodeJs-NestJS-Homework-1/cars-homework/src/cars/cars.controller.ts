@@ -13,7 +13,6 @@ import { CarsService } from './cars.service';
 import { CreateCarDto } from './dtos/create-car.dto';
 import { UpdateCarDto } from './dtos/update-car.dto';
 import { CarFilters } from './interfaces/filters-interface';
-import { filter } from 'rxjs';
 
 @Controller('cars')
 export class CarsController {
