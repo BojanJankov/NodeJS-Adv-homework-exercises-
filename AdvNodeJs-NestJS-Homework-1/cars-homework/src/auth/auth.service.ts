@@ -1,0 +1,78 @@
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from 'src/users/dtos/create-user.dto';
+import { UsersService } from 'src/users/users.service';
+import { hash, compare } from 'bcryptjs';
+import { CredentialsDto } from './dtos/credentials.dto';
+import { ConfigService } from '@nestjs/config';
+import { Request, Response } from 'express';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    private userService: UsersService,
+    private jwtService: JwtService,
+    private configService: ConfigService,
+  ) {}
+
+  async registerUser(registerDataFromUser: CreateUserDto) {
+    const foundUser = await this.userService.getUserByEmail(
+      registerDataFromUser.email,
+    );
+
+    if (foundUser) throw new BadRequestException('Email already exists');
+
+    const hashedPassword = await hash(registerDataFromUser.password, 8);
+
+    registerDataFromUser.password = hashedPassword;
+
+    await this.userService.createuser(registerDataFromUser);
+  }
+
+  async loginUser(credentials: CredentialsDto) {
+    const foundUser = await this.userService.getUserByEmail(credentials.email);
+
+    if (!foundUser) throw new UnauthorizedException('Invalid Credentials');
+
+    const isPasswordValid = await compare(
+      credentials.password,
+      foundUser.password,
+    );
+
+    if (!isPasswordValid)
+      throw new UnauthorizedException('Invalid Credentials');
+
+    const accessToken = await this.jwtService.signAsync({ id: foundUser.id });
+    const refreshToken = await this.jwtService.signAsync({ id: foundUser.id });
+
+    await this.userService.updateRefreshToken(foundUser.id, refreshToken);
+
+    return {
+      user: foundUser,
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async refreshAccessToken(request: Request) {
+    // const token: string = request.headers['refresh-token'];
+    const token = request.headers['authorization']?.split(' ')[1];
+
+    const { id } = await this.jwtService.verifyAsync(token, {
+      secret: this.configService.get('REFRESH_TOKEN_SECRET'),
+    });
+
+    const foundUser = await this.userService.getUserbyId(id);
+
+    const accessToken = await this.jwtService.signAsync({ id: foundUser.id });
+
+    return {
+      accessToken,
+    };
+  }
+}

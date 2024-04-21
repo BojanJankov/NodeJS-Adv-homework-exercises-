@@ -34,7 +34,7 @@ export class CarsController {
 
   @Get('/:id')
   getCarById(@Param('id') id: string) {
-    return this.carsService.getCarById(Number(id));
+    return this.carsService.getCarById(id);
   }
 
   @Post()
@@ -43,11 +43,11 @@ export class CarsController {
   }
   @Patch('/:id')
   updateCar(@Param('id') id: string, @Body() updateCarData: UpdateCarDto) {
-    return this.carsService.updateCar(Number(id), updateCarData);
+    return this.carsService.updateCar(id, updateCarData);
   }
   @Delete('/:id')
   @HttpCode(204)
   deleteCar(@Param('id') id: string) {
-    return this.carsService.deleteCar(Number(id));
+    return this.carsService.deleteCar(id);
   }
 }
