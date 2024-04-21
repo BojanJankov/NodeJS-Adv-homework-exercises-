@@ -47,8 +47,14 @@ export class AuthService {
     if (!isPasswordValid)
       throw new UnauthorizedException('Invalid Credentials');
 
-    const accessToken = await this.jwtService.signAsync({ id: foundUser.id });
-    const refreshToken = await this.jwtService.signAsync({ id: foundUser.id });
+    const accessToken = await this.jwtService.signAsync(
+      { id: foundUser.id },
+      { secret: this.configService.get('ACCESS_TOKEN_SECRET') },
+    );
+    const refreshToken = await this.jwtService.signAsync(
+      { id: foundUser.id },
+      { secret: this.configService.get('REFRESH_TOKEN_SECRET') },
+    );
 
     await this.userService.updateRefreshToken(foundUser.id, refreshToken);
 
@@ -60,16 +66,18 @@ export class AuthService {
   }
 
   async refreshAccessToken(request: Request) {
-    // const token: string = request.headers['refresh-token'];
-    const token = request.headers['authorization']?.split(' ')[1];
+    const token = request.headers['refresh-token'];
 
-    const { id } = await this.jwtService.verifyAsync(token, {
+    const { id } = await this.jwtService.verifyAsync(token as string, {
       secret: this.configService.get('REFRESH_TOKEN_SECRET'),
     });
 
     const foundUser = await this.userService.getUserbyId(id);
 
-    const accessToken = await this.jwtService.signAsync({ id: foundUser.id });
+    const accessToken = await this.jwtService.signAsync(
+      { id: foundUser.id },
+      { secret: this.configService.get('ACCESS_TOKEN_SECRET') },
+    );
 
     return {
       accessToken,
