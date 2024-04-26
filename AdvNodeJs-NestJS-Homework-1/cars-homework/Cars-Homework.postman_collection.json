@@ -36,7 +36,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"make\": \"Volkswagen\",\r\n    \"model\": \"Polo 1.4\",\r\n    \"year\": 2004,\r\n    \"manufacturer\": \"6e6ad31d-4c96-4a05-a9e7-b5c729d932f2\"\r\n    \"carInsurance\": {\r\n        \"policyNumber\": \"PP-3644-AC\",\r\n        \"provider\": \"Provider\",\r\n        \"coverageDetalis\": \"Polo - Gray\"\r\n    }\r\n    \r\n}",
+							"raw": "{\r\n    \"make\": \"Volkswagen\",\r\n    \"model\": \"Polo 1.4\",\r\n    \"year\": 2024,\r\n    \"manufacturer\": \"6e6ad31d-4c96-4a05-a9e7-b5c729d932f2\",\r\n    \"carInsurance\": {\r\n        \"policyNumber\": \"PP-f644-AC\",\r\n        \"provider\": \"Provider\",\r\n        \"coverageDetalis\": \"Polo - Gray3\"\r\n    }\r\n    \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -64,7 +64,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/cars/4074a461-4f3d-493f-a12d-87e00a93edca",
+							"raw": "http://localhost:3000/api/cars/c7ea429c-bf63-4b9a-b931-ee46e4d1f60f",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -73,7 +73,7 @@
 							"path": [
 								"api",
 								"cars",
-								"4074a461-4f3d-493f-a12d-87e00a93edca"
+								"c7ea429c-bf63-4b9a-b931-ee46e4d1f60f"
 							]
 						}
 					},
@@ -90,6 +90,49 @@
 				{
 					"name": "delete car",
 					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/cars/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"cars",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "53c11be7-df71-4578-90c1-29041b419a55"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add features",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "list features of car",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "delete feature",
+					"request": {
 						"method": "GET",
 						"header": []
 					},
@@ -103,6 +146,16 @@
 				{
 					"name": "get all Manufacturers",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBmNTdjNTkyLThlM2MtNDYzNi04ODY1LWMyODYzMzRhYmNiZCIsImlhdCI6MTcxMzczODI3OCwiZXhwIjoxNzEzNzM4MzM4fQ.XaEc4XH5BhTK-TdF0FP6aQXBtijLaoc5TV3DVLlmz58",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -126,7 +179,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/manufacturer/783b6e7d-f3bb-419b-ba33-1443118aa6d4",
+							"raw": "http://localhost:3000/api/manufacturer/bca15fbf-fd5a-48ad-88f8-9a037182e639",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -135,7 +188,7 @@
 							"path": [
 								"api",
 								"manufacturer",
-								"783b6e7d-f3bb-419b-ba33-1443118aa6d4"
+								"bca15fbf-fd5a-48ad-88f8-9a037182e639"
 							]
 						}
 					},
@@ -148,7 +201,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Audi\",\r\n    \"headquarters\": \"Audi AG\"\r\n}",
+							"raw": "{\r\n    \"name\": \"Volkswagen\",\r\n    \"headquarters\": \"Volkswagen Germany\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -220,7 +273,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "783b6e7d-f3bb-419b-ba33-1443118aa6d4"
 								}
 							]
 						}
@@ -291,7 +344,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"policyNumber\": \"PP-3644-AC\",\r\n        \"provider\": \"Provider\",\r\n        \"coverageDetalis\": \"Polo - Gray\"\r\n\r\n}",
+							"raw": "{\r\n    \"policyNumber\": \"PP-4000-MC\",\r\n    \"provider\": \"Provider2\",\r\n    \"coverageDetalis\": \"Black\",\r\n    \"car\": \"6d59185f-dbdf-43a9-9028-edb442cec5e3\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -319,7 +372,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/carinsurance/",
+							"raw": "http://localhost:3000/api/carinsurance/2bd47bb3-5932-42ce-a21f-b17b5aa53bab",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -328,7 +381,7 @@
 							"path": [
 								"api",
 								"carinsurance",
-								""
+								"2bd47bb3-5932-42ce-a21f-b17b5aa53bab"
 							]
 						}
 					},
@@ -343,7 +396,19 @@
 					"name": "get all users",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -357,6 +422,46 @@
 				},
 				{
 					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "db55f34c-9a36-49ff-a457-584bc3c67286"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Features",
+			"item": [
+				{
+					"name": "create feature",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "get all features",
 					"request": {
 						"method": "GET",
 						"header": []
@@ -398,16 +503,67 @@
 		{
 			"name": "login user",
 			"request": {
-				"method": "GET",
-				"header": []
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"jankovbojan@gmail.com\",\r\n    \"password\": \"bojanjankov123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "refresh access token",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBmNTdjNTkyLThlM2MtNDYzNi04ODY1LWMyODYzMzRhYmNiZCIsImlhdCI6MTcxMzczODI3OCwiZXhwIjoxNzEzNzM4MzM4fQ.FI0LwUBKyEMM2CeYGV6xM6oI_oMMFlDAy7kuEcclXRI",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
-				"header": []
+				"header": [
+					{
+						"key": "refresh-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBmNTdjNTkyLThlM2MtNDYzNi04ODY1LWMyODYzMzRhYmNiZCIsImlhdCI6MTcxMzczODc0MywiZXhwIjoxNzEzNzM4ODAzfQ.-IgiUxG0flHN2184X9KJWqAX5MCOXtcIeDObTERx-rk",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/auth/refresh-access",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"auth",
+						"refresh-access"
+					]
+				}
 			},
 			"response": []
 		}

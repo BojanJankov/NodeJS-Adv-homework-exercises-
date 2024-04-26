@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsObject,
   ValidateNested,
+  IsArray,
 } from 'class-validator';
 import { CreateCarInsurenceDto } from 'src/carinsurance/dtos/create-carinsurence.dto';
 

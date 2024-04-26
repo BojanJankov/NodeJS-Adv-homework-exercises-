@@ -5,17 +5,22 @@ import {
 } from '@nestjs/common';
 import { Car } from './entities/car.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository } from 'typeorm';
+import { Feature, FindManyOptions, Repository } from 'typeorm';
 import { CreateCarDto } from './dtos/create-car.dto';
 import { UpdateCarDto } from './dtos/update-car.dto';
 import { CarFilters } from './interfaces/filters-interface';
 import { CarinsuranceService } from 'src/carinsurance/carinsurance.service';
+import { CreateFeatureDto } from 'src/feature/dtos/create-feature.dto';
+import { FeatureService } from 'src/feature/feature.service';
+import { AddFeatureToCarDto } from './dtos/add-feature-car.dto';
+import { features } from 'process';
 
 @Injectable()
 export class CarsService {
   constructor(
     @InjectRepository(Car) private carRepo: Repository<Car>,
     private carInsurenceService: CarinsuranceService,
+    private featureService: FeatureService,
   ) {}
 
   getAllCars(filters: CarFilters) {
@@ -40,6 +45,7 @@ export class CarsService {
       relations: {
         manufacturer: true,
         carInsurance: true,
+        features: true,
       },
     });
 
@@ -69,6 +75,32 @@ export class CarsService {
       throw new BadRequestException(error.message);
     }
   }
+
+  async addFeatureToCar(id: string, addFeatureToCar: AddFeatureToCarDto) {
+    const foundCar = await this.getCarById(id);
+
+    await this.carRepo.save({
+      ...foundCar,
+      features: [...foundCar.features, { id: addFeatureToCar.feature }],
+    });
+  }
+
+  async listAllFeaturesOfCar(id: string) {
+    const foundCar = await this.getCarById(id);
+
+    return foundCar.features;
+  }
+
+  async deleteFeatureOfCar(carId: string, featureId: string) {
+    const foundCar = await this.getCarById(carId);
+
+    foundCar.features = foundCar.features.filter(
+      (feature) => feature.id !== featureId,
+    );
+
+    await this.carRepo.save(foundCar);
+  }
+
   async updateCar(id: string, updateCarData: UpdateCarDto) {
     const foundCar = await this.getCarById(id);
 

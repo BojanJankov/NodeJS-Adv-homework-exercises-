@@ -8,6 +8,7 @@ import { CarinsuranceModule } from './carinsurance/carinsurance.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { FeatureModule } from './feature/feature.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
@@ -31,6 +32,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     CarinsuranceModule,
     UsersModule,
     AuthModule,
+    FeatureModule,
   ],
   controllers: [AppController],
   providers: [AppService],
