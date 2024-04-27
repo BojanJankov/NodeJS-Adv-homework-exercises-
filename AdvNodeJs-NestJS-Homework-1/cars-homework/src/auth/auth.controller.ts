@@ -32,18 +32,6 @@ export class AuthController {
     response.set('access-token', accessToken);
     response.set('refresh-token', refreshToken);
 
-    delete user.password;
-
     return response.json(user);
-  }
-
-  @Get('/refresh-access')
-  @HttpCode(200)
-  async refreshAccessToken(@Req() req: Request, @Res() res: Response) {
-    const { accessToken } = await this.authService.refreshAccessToken(req);
-
-    res.set('access-token', accessToken);
-
-    return res.sendStatus(200);
   }
 }

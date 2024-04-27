@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Manufacturer } from './entitites/manufacturer.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CreateManufacturerDto } from './dtos/create-manufacturer.dto';
 import { UpdateManufacturerDto } from './dtos/update-manufacturer.dto';
+import { ManufacturerFilters } from './interfaces/manufacturer-filters';
 
 @Injectable()
 export class ManufacturerService {
@@ -12,8 +13,29 @@ export class ManufacturerService {
     private manufacturerRepo: Repository<Manufacturer>,
   ) {}
 
-  getAllManufacturers() {
-    return this.manufacturerRepo.find({ loadRelationIds: true });
+  async getAllManufacturers(filters: ManufacturerFilters) {
+    const filtersConfig: FindManyOptions<Manufacturer> = {};
+
+    filtersConfig.take = filters.maxResults;
+    filtersConfig.skip = filters.firstResult;
+
+    if (filters.name) {
+      filtersConfig.where = { name: filters.name };
+    }
+
+    if (filters.headquarters) {
+      filtersConfig.where = {
+        ...filtersConfig.where,
+        headquarters: filters.headquarters,
+      };
+    }
+    const manufacturers = await this.manufacturerRepo.find(filtersConfig);
+    const count = await this.manufacturerRepo.count();
+
+    return {
+      manufacturers,
+      totalRecords: count,
+    };
   }
 
   getManufacturerById(id: string) {

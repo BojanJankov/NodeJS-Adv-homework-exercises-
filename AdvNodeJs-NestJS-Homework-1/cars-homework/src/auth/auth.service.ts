@@ -56,31 +56,15 @@ export class AuthService {
       { secret: this.configService.get('REFRESH_TOKEN_SECRET') },
     );
 
-    await this.userService.updateRefreshToken(foundUser.id, refreshToken);
+    await this.userService.saveRefreshToken(foundUser.id, refreshToken);
+
+    delete foundUser.password;
+    delete foundUser.refreshTokens;
 
     return {
       user: foundUser,
       accessToken,
       refreshToken,
-    };
-  }
-
-  async refreshAccessToken(request: Request) {
-    const token = request.headers['refresh-token'];
-
-    const { id } = await this.jwtService.verifyAsync(token as string, {
-      secret: this.configService.get('REFRESH_TOKEN_SECRET'),
-    });
-
-    const foundUser = await this.userService.getUserbyId(id);
-
-    const accessToken = await this.jwtService.signAsync(
-      { id: foundUser.id },
-      { secret: this.configService.get('ACCESS_TOKEN_SECRET') },
-    );
-
-    return {
-      accessToken,
     };
   }
 }

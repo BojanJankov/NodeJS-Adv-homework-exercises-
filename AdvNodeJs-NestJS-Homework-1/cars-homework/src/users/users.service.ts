@@ -37,12 +37,20 @@ export class UsersService {
     await this.userRepo.save(foundUser);
   }
 
-  async updateRefreshToken(id: string, refreshToken: string) {
+  async saveRefreshToken(id: string, refreshToken: string) {
     const foundUser = await this.getUserbyId(id);
 
-    if (!foundUser.refreshToken) {
-      foundUser.refreshToken = refreshToken;
-    }
+    foundUser.refreshTokens.push(refreshToken);
+
+    await this.userRepo.save(foundUser);
+  }
+
+  async deleteRefreshToken(id: string, refreshToken: string) {
+    const foundUser = await this.getUserbyId(id);
+
+    foundUser.refreshTokens = foundUser.refreshTokens.filter(
+      (token) => token !== refreshToken,
+    );
 
     await this.userRepo.save(foundUser);
   }

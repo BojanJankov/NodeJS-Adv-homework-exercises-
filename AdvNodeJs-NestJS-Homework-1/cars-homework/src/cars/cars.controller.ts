@@ -13,7 +13,6 @@ import { CarsService } from './cars.service';
 import { CreateCarDto } from './dtos/create-car.dto';
 import { UpdateCarDto } from './dtos/update-car.dto';
 import { CarFilters } from './interfaces/filters-interface';
-import { CreateFeatureDto } from 'src/feature/dtos/create-feature.dto';
 import { AddFeatureToCarDto } from './dtos/add-feature-car.dto';
 
 @Controller('cars')
@@ -25,12 +24,17 @@ export class CarsController {
     @Query('make') make: string,
     @Query('model') model: string,
     @Query('orderBy') orderBy: 'year',
+    @Query('maxResults') maxResults: string,
+    @Query('firstResult') firstResult: string,
   ) {
     const filters: CarFilters = {
       make,
       model,
       orderBy,
     };
+
+    filters.maxResults = maxResults ? Number(maxResults) : 10;
+    filters.firstResult = firstResult ? Number(firstResult) - 1 : 0;
     return this.carsService.getAllCars(filters);
   }
 

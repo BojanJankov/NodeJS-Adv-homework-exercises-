@@ -7,12 +7,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ManufacturerService } from './manufacturer.service';
 import { CreateManufacturerDto } from './dtos/create-manufacturer.dto';
 import { UpdateManufacturerDto } from './dtos/update-manufacturer.dto';
 import { AuthGuard } from 'src/auth/auth.quard';
+import { ManufacturerFilters } from './interfaces/manufacturer-filters';
 
 @UseGuards(AuthGuard)
 @Controller('manufacturer')
@@ -20,8 +22,21 @@ export class ManufacturerController {
   constructor(private manufacturerService: ManufacturerService) {}
 
   @Get()
-  getAllManufacturers() {
-    return this.manufacturerService.getAllManufacturers();
+  getAllManufacturers(
+    @Query('name') name: string,
+    @Query('headquarters') headquarters: string,
+    @Query('maxResults') maxResults: string,
+    @Query('firstResult') firstResult: string,
+  ) {
+    const filters: ManufacturerFilters = {
+      name,
+      headquarters,
+    };
+
+    filters.maxResults = maxResults ? Number(maxResults) : 10;
+    filters.firstResult = firstResult ? Number(firstResult) - 1 : 0;
+
+    return this.manufacturerService.getAllManufacturers(filters);
   }
 
   @Get('/:id')

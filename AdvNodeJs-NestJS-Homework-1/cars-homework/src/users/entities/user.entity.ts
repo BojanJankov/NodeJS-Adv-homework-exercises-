@@ -19,6 +19,11 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ nullable: true })
-  refreshToken: string;
+  @Exclude()
+  @Column('text', {
+    nullable: true,
+    default: [],
+    array: true,
+  })
+  refreshTokens: string[];
 }

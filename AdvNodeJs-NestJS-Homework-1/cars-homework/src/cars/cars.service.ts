@@ -23,8 +23,11 @@ export class CarsService {
     private featureService: FeatureService,
   ) {}
 
-  getAllCars(filters: CarFilters) {
+  async getAllCars(filters: CarFilters) {
     const filterConfig: FindManyOptions<Car> = {};
+
+    filterConfig.take = filters.maxResults;
+    filterConfig.skip = filters.firstResult;
 
     if (filters.make) {
       filterConfig.where = { make: filters.make };
@@ -37,7 +40,13 @@ export class CarsService {
       if (filters.orderBy === 'year') filterConfig.order = { year: 'ASC' };
     }
 
-    return this.carRepo.find(filterConfig);
+    const cars = await this.carRepo.find(filterConfig);
+    const count = await this.carRepo.count();
+
+    return {
+      cars,
+      totalRecords: count,
+    };
   }
 
   async getCarById(id: string) {
