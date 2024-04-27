@@ -39,6 +39,7 @@ export class CarsService {
 
     return this.carRepo.find(filterConfig);
   }
+
   async getCarById(id: string) {
     const foundCar = await this.carRepo.findOne({
       where: { id },
