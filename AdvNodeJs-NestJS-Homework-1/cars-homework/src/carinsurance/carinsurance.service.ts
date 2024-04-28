@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CarInsurance } from './entities/car-insurance.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCarInsurenceDto } from './dtos/create-carinsurence.dto';
 import { UpdateCarInsurenceDto } from './dtos/update-carinsurence.dto';
+import { CarInsuranceFitlers } from './interfaces/car-insurence-fitlers';
 
 @Injectable()
 export class CarinsuranceService {
@@ -12,8 +13,37 @@ export class CarinsuranceService {
     private carInsurencesRepo: Repository<CarInsurance>,
   ) {}
 
-  getAllCarInsurances() {
-    return this.carInsurencesRepo.find({ loadRelationIds: true });
+  async getAllCarInsurances(filters: CarInsuranceFitlers) {
+    const filtersConfig: FindManyOptions<CarInsurance> = {};
+
+    filtersConfig.take = filters.maxResults;
+    filtersConfig.skip = filters.firstResult;
+
+    if (filters.policyNumber) {
+      filtersConfig.where = { policyNumber: filters.policyNumber };
+    }
+
+    if (filters.provider) {
+      filtersConfig.where = {
+        ...filtersConfig.where,
+        provider: filters.provider,
+      };
+    }
+
+    if (filters.coverageDetalis) {
+      filtersConfig.where = {
+        ...filtersConfig.where,
+        coverageDetalis: filters.coverageDetalis,
+      };
+    }
+
+    const carsInsurences = await this.carInsurencesRepo.find(filtersConfig);
+    const count = await this.carInsurencesRepo.count();
+
+    return {
+      carsInsurences,
+      totalRecords: count,
+    };
   }
 
   getCarInsurenceById(id: string) {

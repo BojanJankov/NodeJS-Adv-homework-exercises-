@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Feature } from './entities/feature.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CreateFeatureDto } from './dtos/create-feature.dto';
 import { UpdateFeatureDto } from './dtos/update-feature.dto';
+import { FeatureFilters } from './interfaces/feature-filters';
 
 @Injectable()
 export class FeatureService {
@@ -11,8 +12,30 @@ export class FeatureService {
     @InjectRepository(Feature) private featuresRepo: Repository<Feature>,
   ) {}
 
-  getAllFeatures() {
-    return this.featuresRepo.find({ loadRelationIds: true });
+  async getAllFeatures(filters: FeatureFilters) {
+    const filtersConfig: FindManyOptions<Feature> = {};
+
+    filtersConfig.take = filters.maxResults;
+    filtersConfig.skip = filters.firstResult;
+
+    if (filters.name) {
+      filtersConfig.where = { name: filters.name };
+    }
+
+    if (filters.description) {
+      filtersConfig.where = {
+        ...filtersConfig.where,
+        description: filters.description,
+      };
+    }
+
+    const features = await this.featuresRepo.find(filtersConfig);
+    const count = await this.featuresRepo.count();
+
+    return {
+      features,
+      totalRecords: count,
+    };
   }
 
   async getFeatureById(id: string) {
